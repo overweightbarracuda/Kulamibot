@@ -244,8 +244,7 @@ def play_kulami_rand():
             board[com_move[0]][com_move[1]] = 1
             draw_move(com_move[0], com_move[1], 1)
             seqC.append(com_move)
-        # print(moves)
-        # print(com_move)
+            print(com_move[0] + 1, ',', com_move[1] + 1)
         #print_board(board)
         print('Move ', len(seqC),".", "Computer move:", seqC[-1][0]+1,",", seqC[-1][1]+1, " Score: ", score_board(board,tiles))
     final_score = score_board(board, tiles)
