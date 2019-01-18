@@ -1,3 +1,4 @@
+
 from random import randint
 
 from turtle import *
@@ -172,6 +173,7 @@ def best_move(moves, board, tiles, p):
     for move in moves:
         temp_board = board
         temp_board[move[0]][move[1]] = p
+        print (temp_board)
         scores = score_board(temp_board, tiles)
         if scores[a] - scores[b] > biggest:
             biggest = scores[a] - scores[b]
@@ -214,6 +216,42 @@ def play_kulami_AI():
         print('Move ', len(seqC),".", score_board(board,tiles))
     final_score = score_board(board, tiles)
     print("Good game! The score was: ", final_score[0], "to ", final_score[1])
+
+def play_kulami_AI2():
+    seqC = []
+    seqH = []
+    [board, tiles] = init_board()
+    draw_board()
+    draw_tiles(tiles)
+    seqC = [[randint(0, 7), randint(0, 7)]]
+    #print(seqC)
+    board[seqC[-1][0]][seqC[-1][1]] = 1
+    draw_move(seqC[-1][0], seqC[-1][1], 1)
+    #print_board(board)
+    while len(seqC) <= 28:
+        inputx = int(input('enter an x coordinate: '))-1
+        inputy = int(input('enter a y coordinate: '))-1
+        [board, seqH] = check_move_h(inputx, inputy, tiles, board, seqC, seqH)
+        #print_board(board)
+        #print(seqC, seqH)
+        if seqH:
+            moves = gen_moves(seqH[-1][0], seqH[-1][1], tiles, board)
+        else:
+            moves = []
+        # print (moves)
+        if moves:
+            com_move = look_ahead(seqH[-1][0], seqH[-1][1], tiles, board)
+        # com_move = moves[randint(0,len(moves)-1)]
+            board[com_move[0]][com_move[1]] = 1
+            draw_move(com_move[0], com_move[1], 1)
+            seqC.append(com_move)
+        # print(moves)
+            print(com_move[0]+1,',',com_move[1]+1)        #print_board(board)
+        print('Move ', len(seqC),".", score_board(board,tiles))
+    final_score = score_board(board, tiles)
+    print("Good game! The score was: ", final_score[0], "to ", final_score[1])
+
+
 
 def play_kulami_rand():
     seqC = []
@@ -312,19 +350,24 @@ setup(650,650)
 
 def look_ahead(last_x, last_y, tiles, board):
    next_moves = gen_moves(last_x, last_y, tiles, board)
-   next2moves = []
+   print(next_moves)
    sd = -1000
    current_best = next_moves[0]
    for m in next_moves:
+      print(m)
+      print(board)
       temp_board = board
-      temp_board[m[0],m[1]]=1
-      best_move = best_move(m[0],m[1],tiles,temp_board,2)
-      temp_board[current_best[0],current_best[1]]=2
+      temp_board[m[0]][m[1]]=1
+      moves2 = gen_moves(m[0], m[1], tiles, board)
+      print(moves2)
+      best_response = best_move(moves2,tiles,temp_board,2)
+      temp_board[best_response[0]][best_response[1]]=2
       [s1,s2] = score_board(temp_board, tiles)
       if s1-s2 > sd:
          sd=s1-s2
          current_best = m
-         
+      print(temp_board)
+   return current_best
 
 
 def play_kulami():
@@ -341,7 +384,8 @@ def play_kulami():
     print("(1) AI vs Random")
     print("(2) AI vs you")
     print("(3) Random vs you")
-    type = int(input("Which option would you like? Please type 1, 2 ,or 3: "))
+    print("(4) Better AI vs you")
+    type = int(input("Which option would you like? Please type 1, 2 , 3, or 4: "))
 
     if type == 1:
         play_kulami_Vs()
@@ -351,6 +395,9 @@ def play_kulami():
 
     elif type == 3:
         play_kulami_rand()
+
+    elif type == 4:
+       play_kulami_AI2()
 
     else:
         print ("invalid response")
